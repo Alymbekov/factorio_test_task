@@ -39,10 +39,8 @@ def get_author_from_html(html):
             dict_['Author'] = td
         elif text == 'Created':
             dict_['Created'] = td
-
         elif text == 'Last Updated':
             dict_['LastUpdated'] = td
-
         elif text == 'Favorites':
             dict_['Favorites'] = td
     return dict_
