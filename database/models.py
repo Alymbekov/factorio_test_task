@@ -21,6 +21,7 @@ class Information(BaseModel):
     id = PrimaryKeyField(null=False)
     body = TextField(null=True)
     blue_print_string = TextField(null=True)
+    image = CharField(null=True, max_length=255)
     author = ForeignKeyField(Author, related_name='fk_author_info', to_field='id',
                              on_delete='cascade',
                              on_update='cascade')

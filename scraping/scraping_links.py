@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
-from scraping.scraping_details import run_scrape_details
+from scraping.scraping_details import run_scrape_details_and_save_to_db
 from scraping.base_scraping import load_page
 from scraping.helpers import wait_for_xpath, click_btn_by_xpath
 
@@ -45,4 +45,4 @@ def run_scrape_links(url):
 if __name__ == '__main__':
     links = run_scrape_links("https://factorioprints.com/top")
     for link in links[0:2]:
-        run_scrape_details(link)
+        run_scrape_details_and_save_to_db(link)
