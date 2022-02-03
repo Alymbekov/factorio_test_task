@@ -1,9 +1,11 @@
 import os
 import sys
 
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 
+from database.operations import add_author, add_information
 from scraping.base_scraping import load_page
 from scraping.helpers import (
     wait_for_xpath, click_btn_by_xpath, download_and_save_image, init_bs4
@@ -18,7 +20,10 @@ def load_page_data(driver):
     detail = get_detail_from_html(driver.page_source)
     blue_string = get_blueprint(driver)
     file_path = download_and_save_image(driver, '//*[@id="root"]/div/div/div[2]/div[1]/a/img')
-    
+    return (
+        author, detail, blue_string, file_path
+    )
+
 
 def get_card(html, card_header):
     soup = init_bs4(html)
@@ -39,10 +44,8 @@ def get_author_from_html(html):
             dict_['Author'] = td
         elif text == 'Created':
             dict_['Created'] = td
-
         elif text == 'Last Updated':
             dict_['LastUpdated'] = td
-
         elif text == 'Favorites':
             dict_['Favorites'] = td
     return dict_
@@ -64,6 +67,13 @@ def get_blueprint(driver):
     return blue_string
 
 
-def run_scrape_details(url):
+def run_scrape_details_and_save_to_db(url):
     driver = load_page(url)
-    load_page_data(driver)
+    author, detail, blue_string, file_path = load_page_data(driver)
+    author_obj = add_author(author)
+    add_information(
+        information=detail,
+        blue_print_string=blue_string,
+        file_path=file_path,
+        author=author_obj
+    )

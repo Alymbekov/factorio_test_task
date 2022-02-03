@@ -1,5 +1,4 @@
-from distutils.command.config import config
-
+from decouple import config
 from peewee import PostgresqlDatabase
 
 user = config('DB_USER')
