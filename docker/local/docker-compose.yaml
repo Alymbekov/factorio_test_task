@@ -1,0 +1,59 @@
+version : '3'
+
+networks:
+  factorio:
+
+services:
+  rabbitmq:
+    networks:
+      factorio:
+    restart: always
+    image: "rabbitmq:3-management"
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RMQ_PWD}
+
+  postgres:
+    networks:
+      factorio:
+    depends_on:
+      - rabbitmq
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      APP_DB_USER: ${DB_USER}
+      APP_DB_PASS: ${DB_PASSWORD}
+      APP_DB_NAME: ${DB_NAME}
+      POSTGRES_DB : ${DB_NAME}
+
+  api:
+    networks:
+      factorio:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build: ../../
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    command: python3 api/main.py
+
+  worker:
+    restart: always
+    networks:
+      taras-robot:
+    depends_on:
+      - rabbitmq
+      - postgres
+    build: ../../
+    env_file:
+      - .env
+    command: python3 scraping/worker.py

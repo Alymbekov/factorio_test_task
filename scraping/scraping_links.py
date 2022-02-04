@@ -44,5 +44,5 @@ def run_scrape_links(url):
 
 if __name__ == '__main__':
     links = run_scrape_links("https://factorioprints.com/top")
-    for link in links[0:2]:
+    for link in links:
         run_scrape_details_and_save_to_db(link)
